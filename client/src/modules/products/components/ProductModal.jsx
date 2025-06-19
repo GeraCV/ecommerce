@@ -1,0 +1,123 @@
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import useProductModalStore from '../store/productModal.store';
+import useProductStore from '../store/product.store';
+import {useEffect, useState } from 'react';
+import Form from 'react-bootstrap/Form';
+import AddEditForm from './productModal/AddEditForm';
+import ProductDetail from './productModal/ProductDetail';
+import DeleteProduct from './productModal/DeleteProduct';
+
+const ProductModal = () => {
+    const isOpenModal = useProductModalStore(state => state.isOpenModal)
+    const openModal = useProductModalStore(state => state.openModal)
+    const typeModal = useProductModalStore(state => state.typeModal)
+    const addProductStore = useProductStore(state => state.addProduct)
+    const editProductStore = useProductStore(state => state.editProduct)
+    const deleteProductStore = useProductStore(state => state.deleteProduct)
+    const modalData = useProductModalStore(state => state.modalData)
+
+    const fillFormData = () => {
+        setFormData(prev => ({ ...prev, ...modalData }))
+    }
+
+    const [title, setTitle] = useState('')
+    const [isEdit, setIsEdit] = useState(false)
+    const initialState = {
+        name: '',
+        description: '',
+        price: '',
+        category_id: '',
+        company_id: ''
+    }
+    const [formData, setFormData] = useState(initialState)
+
+    const handleChange = (e) => {
+        const name = e.target.name
+        const value = e.target.value
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
+    const handleClose = () => {
+        openModal(false)
+    }
+
+    useEffect(() => {
+        switch (typeModal) {
+            case 'ADD':
+                setTitle('Añadir producto')
+                break;
+            case 'EDIT':
+                setTitle('Editar producto')
+                break;
+            case 'DETAIL':
+                setTitle('Detalle del producto')
+                break;
+            case 'DELETE':
+                setTitle('Eliminar producto')
+                break;
+            default:
+                break;
+        }
+    }, [typeModal])
+
+    useEffect(() => {
+        if(typeModal == 'ADD') {
+            setFormData(initialState)
+        } else {
+            fillFormData()
+            setIsEdit(true)
+        }
+
+    },[isOpenModal, modalData])
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        switch (typeModal) {
+            case 'ADD':
+                addProductStore(formData)
+                break;
+            case 'EDIT':
+                editProductStore(formData)
+                break;
+            case 'DELETE':
+                deleteProductStore(formData.id)
+                break;
+            default:
+                break;
+        }
+        handleClose()
+    }
+
+
+    return (
+        <Modal show={isOpenModal} onHide={handleClose} centered>
+            <Modal.Header className='justify-content-center'>
+                <Modal.Title>
+                    {title}
+                </Modal.Title>
+            </Modal.Header>
+            <Form onSubmit={handleSubmit}>
+                <Modal.Body>
+                    {typeModal === "ADD" && <AddEditForm formData={formData} handleChange={handleChange}/>}
+                    {typeModal === "EDIT" && isEdit && <AddEditForm formData={formData} handleChange={handleChange}/>}
+                    {typeModal === "DELETE" && isEdit && <DeleteProduct formData={formData}/>}
+                    {typeModal === "DETAIL" && isEdit && <ProductDetail/>}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Cancelar
+                    </Button>
+                    <Button variant="primary" type='submit'>
+                        Aceptar
+                    </Button>
+                </Modal.Footer>
+            </Form>
+        </Modal>
+    )
+}
+
+export default ProductModal
