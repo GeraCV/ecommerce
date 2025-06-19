@@ -2,6 +2,7 @@ import express, { json } from 'express'
 import morgan from 'morgan'
 import ProductRouter from './routes/ProductRoute.js'
 import AuthRouter from './routes/AuthRoute.js'
+import CategoryRouter from './routes/CategoryRoute.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
@@ -23,6 +24,7 @@ app.use(cors(corsOptions))
 
 app.use('/auth', AuthRouter)
 app.use('/products', ProductRouter)
+app.use('/categories', CategoryRouter)
 
 const port = process.env.PORT ?? 3000
 
