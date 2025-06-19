@@ -26,7 +26,7 @@ export class ProductController {
                 return res.status(404).json({message: 'No se encontraron resultados.'})
             }
 
-            return res.json({data: onlyProduct})
+            return res.json({data: onlyProduct[0]})
         } catch (error) {
             return res
                 .status(500)
@@ -60,7 +60,7 @@ export class ProductController {
             }
             const product_id = creationResult.insertId
             const createdProduct = await ProductModel.getProductById({user_id, product_id})
-            return res.json({data: createdProduct, message: "El producto se agregó correctamente."})
+            return res.json({data: createdProduct[0], message: "El producto se agregó correctamente."})
         } catch (error) {
             return res
                 .status(500)
@@ -96,7 +96,7 @@ export class ProductController {
             }
 
             const updatedProduct = await ProductModel.getProductById({user_id, product_id})
-            return res.json({data: updatedProduct, message: "El producto se modificó correctamente."})
+            return res.json({data: updatedProduct[0], message: "El producto se modificó correctamente."})
         } catch (error) {
             return res
                 .status(500)
