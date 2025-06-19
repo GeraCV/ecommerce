@@ -7,6 +7,7 @@ import Form from 'react-bootstrap/Form';
 import AddEditForm from './productModal/AddEditForm';
 import ProductDetail from './productModal/ProductDetail';
 import DeleteProduct from './productModal/DeleteProduct';
+import { enqueueSnackbar } from 'notistack';
 
 const ProductModal = () => {
 
@@ -14,10 +15,10 @@ const ProductModal = () => {
     const isOpenModal = useProductModalStore(state => state.isOpenModal)
     const openModal = useProductModalStore(state => state.openModal)
     const typeModal = useProductModalStore(state => state.typeModal)
+    const modalData = useProductModalStore(state => state.modalData)
     const addProductStore = useProductStore(state => state.addProduct)
     const editProductStore = useProductStore(state => state.editProduct)
     const deleteProductStore = useProductStore(state => state.deleteProduct)
-    const modalData = useProductModalStore(state => state.modalData)
 
     const fillFormData = () => {
         setFormData(prev => ({ ...prev, ...modalData }))
@@ -48,22 +49,16 @@ const ProductModal = () => {
     }
 
     useEffect(() => {
-        switch (typeModal) {
-            case 'ADD':
-                setTitle('Añadir producto')
-                break;
-            case 'EDIT':
-                setTitle('Editar producto')
-                break;
-            case 'DETAIL':
-                setTitle('Detalle del producto')
-                break;
-            case 'DELETE':
-                setTitle('Eliminar producto')
-                break;
-            default:
-                break;
+        const titles = {
+            'ADD' : 'Añadir producto',
+            'EDIT' : 'Editar producto',
+            'DELETE' : 'Eliminar producto',
+            'DETAIL' : 'Detalle del producto',
         }
+
+        const title = titles[typeModal] || 'Producto'
+        setTitle(title)
+
     }, [typeModal])
 
     useEffect(() => {
@@ -77,20 +72,24 @@ const ProductModal = () => {
     },[isOpenModal, modalData])
 
     const handleSubmit = async (e) => {
-        setIsLoading(true)
         e.preventDefault()
-        switch (typeModal) {
-            case 'ADD':
-                await addProductStore(formData)
-                break;
-            case 'EDIT':
-                await editProductStore(formData)
-                break;
-            case 'DELETE':
-                await deleteProductStore(formData.id)
-                break;
-            default:
-                break;
+        setIsLoading(true)
+
+        const actions = {
+            'ADD' : () => addProductStore(formData),
+            'EDIT' : () => editProductStore(formData),
+            'DELETE' : () => deleteProductStore(formData.id),
+        }
+
+        const action = actions[typeModal]
+        if(action) {
+            const result = await action()
+            if (typeModal !== 'DETAIL') {
+                enqueueSnackbar(result.message, {
+                    autoHideDuration: 1500,
+                    variant: result.status === 200 ? 'success' : 'warning'
+                });
+            }
         }
         setIsLoading(false)
         handleClose()

@@ -44,6 +44,7 @@ const useProductStore = create((set, get) => ({
                 const data = response.data
                 set({categories: data})
             }
+
         } catch (error) {
             console.error(error)
         }
@@ -63,8 +64,13 @@ const useProductStore = create((set, get) => ({
                 const data = response.data
                 set({products: [...get().products, data]})
             }
-        } catch (error) {
+            return {status: request.status, message: response.message}
+        } catch(error){
             console.error(error)
+            return {
+                status: 500,
+                message: 'Error al procesar la solicitud. Contacta al administrador.'
+            }
         }
     },
     editProduct: async (formData) => {
@@ -78,7 +84,7 @@ const useProductStore = create((set, get) => ({
                 body: JSON.stringify(form),
                 credentials: 'include'
             })
-            const response = await  request.json()
+            const response = await request.json()
             if(request.status === 200) {
                 const data  = response.data
                 set({
@@ -94,8 +100,13 @@ const useProductStore = create((set, get) => ({
                 })
 
             }
+            return {status: request.status, message: response.message}
         } catch (error) {
             console.error(error)
+            return {
+                status: 500,
+                message: 'Error al procesar la solicitud. Contacta al administrador.'
+            }
         }
     },
     deleteProduct: async (id) => {
@@ -104,6 +115,7 @@ const useProductStore = create((set, get) => ({
                 method: 'DELETE',
                 credentials: 'include'
             })
+            const response = await request.json()
 
             if(request.status === 200) {
                 set({
@@ -112,8 +124,13 @@ const useProductStore = create((set, get) => ({
                     )
                 })
             }
+            return {status: request.status, message: response.message}
         } catch (error) {
             console.error(error)
+            return {
+                status: 500,
+                message: 'Error al procesar la solicitud. Contacta al administrador.'
+            }
         }
     },
     getProductDetail: async (id) => {

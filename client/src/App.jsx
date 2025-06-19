@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css"
 import "../src/assets/styles.css"
+import { SnackbarProvider } from 'notistack'
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import LogInPage from "./modules/auth/pages/LogInPage"
 import ProtectedRoute from "./modules/core/components/ProtectedRoute"
@@ -17,6 +18,7 @@ function App() {
 
     return (
         <>
+        <SnackbarProvider>
             <BrowserRouter>
                 <Routes>
                     <Route path='/' element={<Navigate to='/login'/>}/>
@@ -26,6 +28,7 @@ function App() {
                     </Route>
                 </Routes>
             </BrowserRouter>
+        </SnackbarProvider>
         </>
     )
 }

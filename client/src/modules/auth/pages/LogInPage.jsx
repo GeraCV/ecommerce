@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import useAuthStore from '../store/auth.store.js';
 import { useNavigate  } from 'react-router-dom';
+import { enqueueSnackbar } from 'notistack';
 
 const LogInPage = () => {
 
@@ -43,9 +44,19 @@ const LogInPage = () => {
                 setUserData(response.data)
                 setIsLogged(true)
                 navigate('/products')
+            } else {
+                enqueueSnackbar(response.message, {
+                    autoHideDuration: 1500,
+                    variant: 'warning'
+                })
             }
+
             setIsLoading(false)
         } catch (error) {
+            enqueueSnackbar('Error al procesar la solicitud. Contacta al administrador.', {
+                autoHideDuration: 1500,
+                variant: 'warning'
+            })
             console.error(error)
             setIsLoading(false)
         }
