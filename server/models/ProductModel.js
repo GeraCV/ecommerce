@@ -6,15 +6,22 @@ export class ProductModel {
         return await Database.query(
             `
                 SELECT
-                	product.id,
+                    product.id,
+                    product.description,
                     product.name AS product_name,
-                    FORMAT(product.price, 2) AS price,
+                    product.price AS price,
                     user.name AS user_name,
+                    company.id AS company_id,
+                    category.id AS category_id,
                     DATE_FORMAT(product.created_at, '%Y-%m-%d %H:%i:%s') AS created_at
                 FROM
                     product
                         LEFT JOIN
                     user ON product.user_id = user.id
+                        LEFT JOIN
+                    company ON product.company_id = company.id
+                        LEFT JOIN
+                    category ON product.category_id = category.id
                 WHERE
                     user_id = ?;
 
@@ -27,15 +34,22 @@ export class ProductModel {
         return await Database.query(
             `
                 SELECT
-                	product.id,
+                    product.id,
+                    product.description,
                     product.name AS product_name,
-                    FORMAT(product.price, 2) AS price,
+                    product.price AS price,
                     user.name AS user_name,
+                    company.id AS company_id,
+                    category.id AS category_id,
                     DATE_FORMAT(product.created_at, '%Y-%m-%d %H:%i:%s') AS created_at
                 FROM
                     product
                         LEFT JOIN
                     user ON product.user_id = user.id
+                        LEFT JOIN
+                    company ON product.company_id = company.id
+                        LEFT JOIN
+                    category ON product.category_id = category.id
                 WHERE
                     user_id = ? AND product.id = ?;
 
