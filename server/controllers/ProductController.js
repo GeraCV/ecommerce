@@ -3,7 +3,7 @@ import { ProductModel } from "../models/ProductModel.js"
 export class ProductController {
     static async getAllProductsByUser (req, res) {
         try {
-            const user_id = 1
+            const user_id = req.tokendata.data.id
             const products = await ProductModel.getAllProductsByUser({user_id})
             if(!products.length) {
                 return res.status(404).json({message: 'No se encontraron resultados.'})
@@ -19,7 +19,7 @@ export class ProductController {
 
     static async getDetailProductById (req, res) {
         try {
-            const user_id = 1
+            const user_id = req.tokendata.data.id
             const product_id = req.params.id
             const onlyProduct = await ProductModel.getDetailProductById({user_id, product_id})
             if(!onlyProduct.length) {
@@ -44,7 +44,7 @@ export class ProductController {
                 category_id
             } = req.body
 
-            const user_id = 1
+            const user_id = req.tokendata.data.id
 
             const creationResult = await ProductModel.createProduct({
                 name,
@@ -78,7 +78,7 @@ export class ProductController {
                 category_id
             } = req.body
 
-            const user_id = 1
+            const user_id = req.tokendata.data.id
             const product_id = req.params.id
 
             const creationResult = await ProductModel.updateProduct({
@@ -106,7 +106,7 @@ export class ProductController {
 
     static async deleteProduct (req, res) {
         try {
-            const user_id = 1
+            const user_id = req.tokendata.data.id
             const product_id = req.params.id
 
             const creationResult = await ProductModel.deleteProduct({ product_id, user_id })
