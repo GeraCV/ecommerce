@@ -7,7 +7,12 @@ const useProductModalStore = create((set) => ({
     openModal: (status, data = null) =>
         set({isOpenModal: status, modalData: data }),
     closeModal: () => set({isOpenModal: false}),
-    setTypeModal: (type) => set({typeModal: type})
+    setTypeModal: (type) => set({typeModal: type}),
+    reset: () => set({
+        isOpenModal : false,
+        modalData: null,
+        typeModal: null
+    })
 }))
 
 export default useProductModalStore

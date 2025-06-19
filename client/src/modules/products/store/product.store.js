@@ -143,7 +143,14 @@ const useProductStore = create((set, get) => ({
         } catch (error) {
             console.error(error)
         }
-    }
+    },
+    reset: () => set({
+        products: [],
+        detailProducts: [],
+        detailOnlyProduct: {},
+        categories: [],
+        companies: []
+    })
 
 }))
 

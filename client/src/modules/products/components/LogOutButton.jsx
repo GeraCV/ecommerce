@@ -1,12 +1,10 @@
 import Button from 'react-bootstrap/Button';
 import { useNavigate  } from 'react-router-dom';
-import useAuthStore from '../../auth/store/auth.store';
+import resetStores from '../../core/utils/resetStores';
 
 const LogOutButton = () => {
 
     const navigate = useNavigate()
-    const setUserData = useAuthStore(state => state.setUserData)
-    const setIsLogged = useAuthStore(state => state.setIsLogged)
 
     const logOutSession = async (e) => {
         e.preventDefault()
@@ -17,8 +15,7 @@ const LogOutButton = () => {
         })
 
         if(request.status == 200) {
-            setUserData({})
-            setIsLogged(false)
+            resetStores()
             navigate('/login')
         }
     }
