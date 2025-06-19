@@ -1,0 +1,26 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.wrapper-main-container {
+    min-width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    place-content: center;
+    padding: 20px 15px;
+}
+
+.main-container {
+    width: 100%;
+    padding: 50px;
+    max-width: 500px;
+    min-width: 280px;
+    max-height: min-content;
+    border-radius: 24px;
+    border: 1px solid rgb(199, 198, 198);
+}
