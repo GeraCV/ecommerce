@@ -8,7 +8,9 @@ const useProductStore = create((set, get) => ({
     companies: [],
     getAllProducts: async () => {
         try {
-            const request = await fetch('http://localhost:3000/products')
+            const request = await fetch('http://localhost:3000/products', {
+                credentials: 'include'
+            })
             const response = await  request.json()
             if(request.status === 200) {
                 const data = response.data
@@ -20,7 +22,9 @@ const useProductStore = create((set, get) => ({
     },
     getAllCompanies: async () => {
         try {
-            const request = await fetch('http://localhost:3000/companies')
+            const request = await fetch('http://localhost:3000/companies',{
+                credentials: 'include'
+            })
             const response = await  request.json()
             if(request.status === 200) {
                 const data = response.data
@@ -32,7 +36,9 @@ const useProductStore = create((set, get) => ({
     },
     getAllCategories: async () => {
         try {
-            const request = await fetch('http://localhost:3000/categories')
+            const request = await fetch('http://localhost:3000/categories',{
+                credentials: 'include'
+            })
             const response = await  request.json()
             if(request.status === 200) {
                 const data = response.data
