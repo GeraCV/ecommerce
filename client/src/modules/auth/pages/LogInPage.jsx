@@ -9,6 +9,7 @@ const LogInPage = () => {
     const navigate = useNavigate()
     const setUserData = useAuthStore(state => state.setUserData)
     const setIsLogged = useAuthStore(state => state.setIsLogged)
+    const [isLoading, setIsLoading] = useState(false)
 
     const [formData, setFormData] = useState({
         email: '',
@@ -25,22 +26,28 @@ const LogInPage = () => {
     }
 
     const submitSignInForm = async (e) => {
-        e.preventDefault()
+        try {
+            e.preventDefault()
+            setIsLoading(true)
+            const request = await fetch('http://localhost:3000/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-type' : 'application/json'
+                },
+                body: JSON.stringify(formData),
+                credentials: 'include'
+            })
 
-        const request = await fetch('http://localhost:3000/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-type' : 'application/json'
-            },
-            body: JSON.stringify(formData),
-            credentials: 'include'
-        })
-
-        const response = await request.json()
-        if(request.status == 200) {
-            setUserData(response.data)
-            setIsLogged(true)
-            navigate('/products')
+            const response = await request.json()
+            if(request.status == 200) {
+                setUserData(response.data)
+                setIsLogged(true)
+                navigate('/products')
+            }
+            setIsLoading(false)
+        } catch (error) {
+            console.error(error)
+            setIsLoading(false)
         }
 
     }
@@ -73,8 +80,13 @@ const LogInPage = () => {
                         className="w-100 mt-4"
                         variant="primary"
                         type="submit"
+                        disabled={isLoading}
                         >
-                        Ingresar
+                            {
+                                isLoading
+                                    ? 'Ingresando...'
+                                    : 'Ingresar'
+                            }
                     </Button>
                 </Form>
             </div>

@@ -9,6 +9,8 @@ import ProductDetail from './productModal/ProductDetail';
 import DeleteProduct from './productModal/DeleteProduct';
 
 const ProductModal = () => {
+
+    const [isLoading, setIsLoading] = useState(false)
     const isOpenModal = useProductModalStore(state => state.isOpenModal)
     const openModal = useProductModalStore(state => state.openModal)
     const typeModal = useProductModalStore(state => state.typeModal)
@@ -75,20 +77,22 @@ const ProductModal = () => {
     },[isOpenModal, modalData])
 
     const handleSubmit = async (e) => {
+        setIsLoading(true)
         e.preventDefault()
         switch (typeModal) {
             case 'ADD':
-                addProductStore(formData)
+                await addProductStore(formData)
                 break;
             case 'EDIT':
-                editProductStore(formData)
+                await editProductStore(formData)
                 break;
             case 'DELETE':
-                deleteProductStore(formData.id)
+                await deleteProductStore(formData.id)
                 break;
             default:
                 break;
         }
+        setIsLoading(false)
         handleClose()
     }
 
@@ -108,11 +112,23 @@ const ProductModal = () => {
                     {typeModal === "DETAIL" && isEdit && <ProductDetail/>}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Cancelar
-                    </Button>
-                    <Button variant="primary" type='submit'>
-                        Aceptar
+                    {
+                        typeModal != 'DETAIL' && (
+                            <Button variant="secondary" onClick={handleClose}>
+                                Cancelar
+                            </Button>
+                        )
+                    }
+                    <Button
+                        variant="primary"
+                        type='submit'
+                        disabled={isLoading}
+                    >
+                        {
+                            isLoading
+                                ? 'Procesando...'
+                                : 'Aceptar'
+                        }
                     </Button>
                 </Modal.Footer>
             </Form>
